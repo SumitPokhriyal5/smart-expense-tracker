@@ -12,6 +12,7 @@ app.use(express.json());
 
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/transactions", require("./routes/transactionRoutes"));
+app.use("/api/analytics", require("./routes/analyticsRoutes"));
 
 app.get("/", (req, res) => {
   res.json({ message: "Smart Expense Tracker API is running" });
