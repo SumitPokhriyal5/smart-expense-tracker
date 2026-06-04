@@ -1,18 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-
-function Placeholder({ title }: { title: string }) {
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="bg-white shadow-card rounded-2xl px-10 py-8 text-center">
-        <h1 className="text-2xl font-semibold text-brand-600">{title}</h1>
-        <p className="text-slate-500 mt-2">Smart Expense Tracker</p>
-      </div>
-    </div>
-  );
-}
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -21,11 +13,31 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
           <Route
             path="/dashboard"
-            element={<Placeholder title="Dashboard" />}
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              </ProtectedRoute>
+            }
           />
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route
+            path="/transactions"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <div className="text-slate-500">
+                    Transactions page coming in Step 10
+                  </div>
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
