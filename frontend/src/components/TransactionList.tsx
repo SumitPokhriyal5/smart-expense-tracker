@@ -3,9 +3,14 @@ import { type Transaction, formatCurrency, formatDate } from "../lib/types";
 type Props = {
   transactions: Transaction[];
   onDelete: (id: string) => void;
+  onEdit: (tx: Transaction) => void;
 };
 
-export default function TransactionList({ transactions, onDelete }: Props) {
+export default function TransactionList({
+  transactions,
+  onDelete,
+  onEdit,
+}: Props) {
   if (transactions.length === 0) {
     return (
       <div className="bg-white shadow-card rounded-2xl p-10 text-center">
@@ -51,13 +56,22 @@ export default function TransactionList({ transactions, onDelete }: Props) {
               {formatCurrency(tx.amount)}
             </div>
 
-            <button
-              onClick={() => onDelete(tx._id)}
-              className="text-slate-300 hover:text-expense transition px-2"
-              title="Delete"
-            >
-              ✕
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => onEdit(tx)}
+                className="text-slate-300 hover:text-brand-600 transition px-1.5"
+                title="Edit"
+              >
+                ✎
+              </button>
+              <button
+                onClick={() => onDelete(tx._id)}
+                className="text-slate-300 hover:text-expense transition px-1.5"
+                title="Delete"
+              >
+                ✕
+              </button>
+            </div>
           </div>
         ))}
       </div>

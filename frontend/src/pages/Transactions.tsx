@@ -3,10 +3,12 @@ import { api } from "../lib/api";
 import { type Transaction } from "../lib/types";
 import TransactionForm from "../components/TransactionForm";
 import TransactionList from "../components/TransactionList";
+import EditTransactionModal from "../components/EditTransactionModal";
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState<Transaction | null>(null);
 
   useEffect(() => {
     api<Transaction[]>("/transactions")
@@ -17,6 +19,12 @@ export default function Transactions() {
 
   const handleAdded = (tx: Transaction) => {
     setTransactions((prev) => [tx, ...prev]);
+  };
+
+  const handleUpdated = (updated: Transaction) => {
+    setTransactions((prev) =>
+      prev.map((t) => (t._id === updated._id ? updated : t))
+    );
   };
 
   const handleDelete = async (id: string) => {
@@ -51,10 +59,19 @@ export default function Transactions() {
             <TransactionList
               transactions={transactions}
               onDelete={handleDelete}
+              onEdit={setEditing}
             />
           )}
         </div>
       </div>
+
+      {editing && (
+        <EditTransactionModal
+          transaction={editing}
+          onClose={() => setEditing(null)}
+          onUpdated={handleUpdated}
+        />
+      )}
     </div>
   );
 }
