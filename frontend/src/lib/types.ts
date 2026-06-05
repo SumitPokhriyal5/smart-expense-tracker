@@ -43,3 +43,20 @@ export function formatDate(date: string) {
     year: "numeric",
   });
 }
+
+export type Summary = {
+  totalIncome: number;
+  totalExpense: number;
+  balance: number;
+};
+
+export type CategoryDatum = {
+  category: string;
+  total: number;
+};
+
+export type MonthlyDatum = {
+  month: string;
+  income: number;
+  expense: number;
+};
