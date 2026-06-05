@@ -60,3 +60,32 @@ export type MonthlyDatum = {
   income: number;
   expense: number;
 };
+
+export type InsightMessage = {
+  type: "positive" | "neutral" | "negative";
+  text: string;
+};
+
+export type Insights = {
+  month: string;
+  income: number;
+  expense: number;
+  savings: number;
+  savingsRate: number;
+  expenseChange: number | null;
+  topCategory: { category: string; amount: number } | null;
+  dailyBurn: number;
+  projectedExpense: number;
+  overBudgetCount: number;
+  messages: InsightMessage[];
+};
+
+export type BudgetStatus = {
+  _id: string;
+  category: string;
+  limit: number;
+  spent: number;
+  remaining: number;
+  percentage: number;
+  state: "ok" | "warning" | "over";
+};

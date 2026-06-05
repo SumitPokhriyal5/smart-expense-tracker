@@ -6,7 +6,9 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import Card from "./ui/Card";
 import { type CategoryDatum, formatCurrency } from "../lib/types";
+import { useTheme } from "../context/theme-context";
 
 const COLORS = [
   "#6366f1",
@@ -19,16 +21,22 @@ const COLORS = [
   "#64748b",
 ];
 
-type Props = { data: CategoryDatum[] };
+export default function CategoryPieChart({ data }: { data: CategoryDatum[] }) {
+  const { theme } = useTheme();
+  const tooltipStyle = {
+    backgroundColor: theme === "dark" ? "#1e293b" : "#fff",
+    border: `1px solid ${theme === "dark" ? "#334155" : "#e2e8f0"}`,
+    borderRadius: "0.75rem",
+    color: theme === "dark" ? "#f1f5f9" : "#1e293b",
+  };
 
-export default function CategoryPieChart({ data }: Props) {
   return (
-    <div className="bg-white shadow-card rounded-2xl p-6">
-      <h3 className="font-semibold text-slate-800 mb-4">
+    <Card className="p-6">
+      <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-4">
         Expenses by Category
       </h3>
       {data.length === 0 ? (
-        <div className="h-64 flex items-center justify-center text-slate-400">
+        <div className="h-64 flex items-center justify-center text-slate-400 dark:text-slate-500">
           No expense data
         </div>
       ) : (
@@ -48,11 +56,19 @@ export default function CategoryPieChart({ data }: Props) {
                 <Cell key={i} fill={COLORS[i % COLORS.length]} />
               ))}
             </Pie>
-            <Tooltip formatter={(value: number) => formatCurrency(value)} />
-            <Legend />
+            <Tooltip
+              contentStyle={tooltipStyle}
+              formatter={(value: number) => formatCurrency(value)}
+            />
+            <Legend
+              wrapperStyle={{
+                fontSize: "13px",
+                color: theme === "dark" ? "#cbd5e1" : "#475569",
+              }}
+            />
           </PieChart>
         </ResponsiveContainer>
       )}
-    </div>
+    </Card>
   );
 }

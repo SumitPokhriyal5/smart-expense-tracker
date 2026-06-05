@@ -1,3 +1,4 @@
+import Card from "./ui/Card";
 import { type Summary, formatCurrency } from "../lib/types";
 
 type Props = { summary: Summary };
@@ -8,21 +9,24 @@ export default function SummaryCards({ summary }: Props) {
       label: "Total Income",
       value: summary.totalIncome,
       color: "text-income",
-      bg: "bg-green-50",
+      bg: "bg-green-50 dark:bg-green-900/30",
       icon: "📈",
     },
     {
       label: "Total Expense",
       value: summary.totalExpense,
       color: "text-expense",
-      bg: "bg-red-50",
+      bg: "bg-red-50 dark:bg-red-900/30",
       icon: "📉",
     },
     {
       label: "Balance",
       value: summary.balance,
-      color: summary.balance >= 0 ? "text-brand-600" : "text-expense",
-      bg: "bg-brand-50",
+      color:
+        summary.balance >= 0
+          ? "text-brand-600 dark:text-brand-400"
+          : "text-expense",
+      bg: "bg-brand-50 dark:bg-brand-900/30",
       icon: "💼",
     },
   ];
@@ -30,9 +34,9 @@ export default function SummaryCards({ summary }: Props) {
   return (
     <div className="grid gap-4 sm:grid-cols-3">
       {cards.map((card) => (
-        <div key={card.label} className="bg-white shadow-card rounded-2xl p-5">
+        <Card key={card.label} className="p-5">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-slate-500">
+            <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
               {card.label}
             </span>
             <span
@@ -44,7 +48,7 @@ export default function SummaryCards({ summary }: Props) {
           <p className={`mt-3 text-2xl font-bold ${card.color}`}>
             {formatCurrency(card.value)}
           </p>
-        </div>
+        </Card>
       ))}
     </div>
   );
