@@ -5,6 +5,7 @@ import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import Transactions from "./pages/Transactions";
 
 function App() {
   return (
@@ -29,9 +30,7 @@ function App() {
             element={
               <ProtectedRoute>
                 <Layout>
-                  <div className="text-slate-500">
-                    Transactions page coming in Step 10
-                  </div>
+                  <Transactions />
                 </Layout>
               </ProtectedRoute>
             }
