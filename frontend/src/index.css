@@ -5,5 +5,9 @@
 @tailwind utilities;
 
 body {
-  @apply bg-slate-50 text-slate-800 font-sans antialiased;
+  @apply bg-slate-50 text-slate-800 font-sans antialiased transition-colors duration-300;
+}
+
+.dark body {
+  @apply bg-slate-900 text-slate-100;
 }
