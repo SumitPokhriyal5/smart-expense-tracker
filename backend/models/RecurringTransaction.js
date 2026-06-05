@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const transactionSchema = new mongoose.Schema(
+const recurringSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -27,25 +27,23 @@ const transactionSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
-    paymentMethod: {
+    frequency: {
       type: String,
-      enum: ["cash", "card", "upi", "bank", "other"],
-      default: "cash",
+      enum: ["monthly"],
+      default: "monthly",
     },
-    tags: {
-      type: [String],
-      default: [],
+    dayOfMonth: {
+      type: Number,
+      min: 1,
+      max: 28,
+      default: 1,
     },
-    date: {
-      type: Date,
-      required: true,
-      default: Date.now,
+    active: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }
 );
 
-transactionSchema.index({ user: 1, date: -1 });
-transactionSchema.index({ user: 1, category: 1 });
-
-module.exports = mongoose.model("Transaction", transactionSchema);
+module.exports = mongoose.model("RecurringTransaction", recurringSchema);
