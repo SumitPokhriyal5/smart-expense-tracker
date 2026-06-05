@@ -9,6 +9,7 @@ import SummaryCards from "../components/SummaryCards";
 import CategoryPieChart from "../components/CategoryPieChart";
 import MonthlyTrendChart from "../components/MonthlyTrendChart";
 import MonthlyBarChart from "../components/MonthlyBarChart";
+import { DashboardSkeleton } from "../components/Skeleton";
 
 export default function Dashboard() {
   const [summary, setSummary] = useState<Summary | null>(null);
@@ -32,11 +33,7 @@ export default function Dashboard() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="bg-white shadow-card rounded-2xl p-10 text-center text-slate-400">
-        Loading dashboard...
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   return (

@@ -4,11 +4,13 @@ import { type Transaction } from "../lib/types";
 import TransactionForm from "../components/TransactionForm";
 import TransactionList from "../components/TransactionList";
 import EditTransactionModal from "../components/EditTransactionModal";
+import { useToast } from "../context/toast-context";
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Transaction | null>(null);
+  const toast = useToast();
 
   useEffect(() => {
     api<Transaction[]>("/transactions")
@@ -19,12 +21,14 @@ export default function Transactions() {
 
   const handleAdded = (tx: Transaction) => {
     setTransactions((prev) => [tx, ...prev]);
+    toast("Transaction added successfully", "success");
   };
 
   const handleUpdated = (updated: Transaction) => {
     setTransactions((prev) =>
       prev.map((t) => (t._id === updated._id ? updated : t))
     );
+    toast("Transaction updated successfully", "success");
   };
 
   const handleDelete = async (id: string) => {
@@ -33,9 +37,10 @@ export default function Transactions() {
     setTransactions((prev) => prev.filter((t) => t._id !== id));
     try {
       await api(`/transactions/${id}`, { method: "DELETE" });
+      toast("Transaction deleted successfully", "success");
     } catch {
       setTransactions(previous);
-      alert("Failed to delete. Please try again.");
+      toast("Failed to delete. Please try again.", "error");
     }
   };
 
