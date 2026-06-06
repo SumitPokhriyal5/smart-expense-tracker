@@ -9,6 +9,7 @@ import BudgetCard from "../components/BudgetCard";
 import BudgetModal from "../components/BudgetModal";
 import DateRangeSelector from "../components/DateRangeSelector";
 import { SkeletonCard } from "../components/Skeleton";
+import ConfirmDialog from "../components/ui/ConfirmDialog";
 
 export default function Budgets() {
   const { month } = useDateRange();
@@ -16,6 +17,7 @@ export default function Budgets() {
   const [budgets, setBudgets] = useState<BudgetStatus[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const [refetchKey, setRefetchKey] = useState(0);
 
@@ -43,10 +45,12 @@ export default function Budgets() {
     };
   }, [month, refetchKey]);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this budget?")) return;
+  const confirmDelete = async () => {
+    if (!deletingId) return;
+    const id = deletingId;
     const prev = budgets;
     setBudgets((b) => b.filter((x) => x._id !== id));
+    setDeletingId(null);
     try {
       await api(`/budgets/${id}`, { method: "DELETE" });
       toast("Budget deleted");
@@ -134,7 +138,11 @@ export default function Budgets() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {budgets.map((b) => (
-            <BudgetCard key={b._id} budget={b} onDelete={handleDelete} />
+            <BudgetCard
+              key={b._id}
+              budget={b}
+              onDelete={(id) => setDeletingId(id)}
+            />
           ))}
         </div>
       )}
@@ -145,6 +153,13 @@ export default function Budgets() {
           existingCategories={budgets.map((b) => b.category)}
           onClose={() => setShowModal(false)}
           onSaved={refresh}
+        />
+      )}
+      {deletingId && (
+        <ConfirmDialog
+          message="This budget will be permanently deleted."
+          onConfirm={confirmDelete}
+          onCancel={() => setDeletingId(null)}
         />
       )}
     </div>

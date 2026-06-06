@@ -6,6 +6,8 @@ export type Transaction = {
   amount: number;
   category: string;
   note: string;
+  paymentMethod: string;
+  tags: string[];
   date: string;
 };
 
@@ -88,4 +90,24 @@ export type BudgetStatus = {
   remaining: number;
   percentage: number;
   state: "ok" | "warning" | "over";
+};
+
+export const PAYMENT_METHODS = [
+  { value: "cash", label: "Cash" },
+  { value: "card", label: "Card" },
+  { value: "upi", label: "UPI" },
+  { value: "bank", label: "Bank" },
+  { value: "other", label: "Other" },
+];
+
+export type Pagination = {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+};
+
+export type TransactionsResponse = {
+  transactions: Transaction[];
+  pagination: Pagination;
 };

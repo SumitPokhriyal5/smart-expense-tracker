@@ -133,9 +133,39 @@ const deleteTransaction = async (req, res) => {
 
 const exportTransactions = async (req, res) => {
   try {
-    const transactions = await Transaction.find({ user: req.user._id }).sort({
-      date: -1,
-    });
+    const {
+      type,
+      category,
+      paymentMethod,
+      search,
+      startDate,
+      endDate,
+      sortBy = "date",
+      order = "desc",
+    } = req.query;
+
+    const filter = { user: req.user._id };
+    if (type) filter.type = type;
+    if (category) filter.category = category;
+    if (paymentMethod) filter.paymentMethod = paymentMethod;
+
+    if (startDate || endDate) {
+      filter.date = {};
+      if (startDate) filter.date.$gte = new Date(startDate);
+      if (endDate) filter.date.$lte = new Date(endDate);
+    }
+
+    if (search) {
+      const regex = new RegExp(search, "i");
+      filter.$or = [{ note: regex }, { category: regex }, { tags: regex }];
+    }
+
+    const sortOptions = {};
+    const allowedSort = ["date", "amount", "category"];
+    sortOptions[allowedSort.includes(sortBy) ? sortBy : "date"] =
+      order === "asc" ? 1 : -1;
+
+    const transactions = await Transaction.find(filter).sort(sortOptions);
 
     const header = [
       "Date",

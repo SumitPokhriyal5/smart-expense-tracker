@@ -5,7 +5,10 @@ import {
   type TxType,
   EXPENSE_CATEGORIES,
   INCOME_CATEGORIES,
+  PAYMENT_METHODS,
 } from "../lib/types";
+import Button from "./ui/Button";
+import Select from "./ui/Select";
 
 type Props = {
   transaction: Transaction;
@@ -21,6 +24,9 @@ export default function EditTransactionModal({
   const [type, setType] = useState<TxType>(transaction.type);
   const [amount, setAmount] = useState(String(transaction.amount));
   const [category, setCategory] = useState(transaction.category);
+  const [paymentMethod, setPaymentMethod] = useState(
+    transaction.paymentMethod || "cash"
+  );
   const [note, setNote] = useState(transaction.note);
   const [date, setDate] = useState(transaction.date.split("T")[0]);
   const [loading, setLoading] = useState(false);
@@ -35,6 +41,9 @@ export default function EditTransactionModal({
     );
   };
 
+  const inputClass =
+    "w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 px-4 py-2.5 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 dark:focus:ring-brand-900";
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!amount || Number(amount) <= 0) return;
@@ -44,7 +53,14 @@ export default function EditTransactionModal({
         `/transactions/${transaction._id}`,
         {
           method: "PUT",
-          body: { type, amount: Number(amount), category, note, date },
+          body: {
+            type,
+            amount: Number(amount),
+            category,
+            paymentMethod,
+            note,
+            date,
+          },
         }
       );
       onUpdated(updated);
@@ -58,32 +74,34 @@ export default function EditTransactionModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm px-4"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md bg-white rounded-2xl shadow-xl p-6 space-y-4"
+        className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-800 p-6 shadow-xl animate-scaleIn"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-slate-800">Edit Transaction</h3>
+        <div className="flex items-center justify-between mb-5">
+          <h3 className="font-semibold text-slate-800 dark:text-slate-100">
+            Edit Transaction
+          </h3>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 transition"
+            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition"
           >
             ✕
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
+          <div className="grid grid-cols-2 gap-2 rounded-xl bg-slate-100 dark:bg-slate-700 p-1">
             <button
               type="button"
               onClick={() => switchType("expense")}
               className={`rounded-lg py-2 text-sm font-medium transition ${
                 type === "expense"
-                  ? "bg-white text-expense shadow-sm"
-                  : "text-slate-500"
+                  ? "bg-white dark:bg-slate-800 text-expense shadow-sm"
+                  : "text-slate-500 dark:text-slate-400"
               }`}
             >
               Expense
@@ -93,8 +111,8 @@ export default function EditTransactionModal({
               onClick={() => switchType("income")}
               className={`rounded-lg py-2 text-sm font-medium transition ${
                 type === "income"
-                  ? "bg-white text-income shadow-sm"
-                  : "text-slate-500"
+                  ? "bg-white dark:bg-slate-800 text-income shadow-sm"
+                  : "text-slate-500 dark:text-slate-400"
               }`}
             >
               Income
@@ -102,7 +120,7 @@ export default function EditTransactionModal({
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-slate-700">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
               Amount
             </label>
             <input
@@ -111,66 +129,70 @@ export default function EditTransactionModal({
               onChange={(e) => setAmount(e.target.value)}
               min="1"
               required
-              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+              className={inputClass}
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-slate-700">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
               Category
             </label>
-            <select
+            <Select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
-            >
-              {categories.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
+              options={categories.map((c) => ({ value: c, label: c }))}
+              className="w-full"
+            />
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-slate-700">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+              Payment Method
+            </label>
+            <Select
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+              options={PAYMENT_METHODS}
+              className="w-full"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
               Date
             </label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+              className={inputClass}
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-sm font-medium text-slate-700">
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
               Note (optional)
             </label>
             <input
               type="text"
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+              className={inputClass}
             />
           </div>
 
           <div className="flex gap-3 pt-1">
-            <button
+            <Button
               type="button"
+              variant="secondary"
               onClick={onClose}
-              className="flex-1 rounded-xl border border-slate-200 py-2.5 font-semibold text-slate-600 transition hover:bg-slate-50"
+              className="flex-1"
             >
               Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 rounded-xl bg-brand-600 py-2.5 font-semibold text-white transition hover:bg-brand-700 disabled:opacity-60"
-            >
+            </Button>
+            <Button type="submit" disabled={loading} className="flex-1">
               {loading ? "Saving..." : "Save"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
