@@ -44,6 +44,7 @@ export default function Topbar() {
         {[
           { to: "/dashboard", label: "Dashboard" },
           { to: "/transactions", label: "Transactions" },
+          { to: "/budgets", label: "Budgets" },
         ].map((link) => (
           <NavLink
             key={link.to}

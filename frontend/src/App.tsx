@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
+import Budgets from "./pages/Budgets";
 
 function App() {
   return (
@@ -43,6 +44,16 @@ function App() {
                 <Route
                   path="*"
                   element={<Navigate to="/dashboard" replace />}
+                />
+                <Route
+                  path="/budgets"
+                  element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <Budgets />
+                      </Layout>
+                    </ProtectedRoute>
+                  }
                 />
               </Routes>
             </BrowserRouter>
