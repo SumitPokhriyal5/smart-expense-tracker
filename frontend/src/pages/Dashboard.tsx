@@ -59,40 +59,43 @@ export default function Dashboard() {
     };
   }, [month]);
 
-  if (loading) return <DashboardSkeleton />;
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-800 dark:text-slate-100">
             Dashboard
           </h1>
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-slate-500 dark:text-slate-400 mt-0.5">
             Your financial overview at a glance.
           </p>
         </div>
         <DateRangeSelector />
       </div>
+      {loading ? (
+        <DashboardSkeleton />
+      ) : (
+        <>
+          {summary && <SummaryCards summary={summary} />}
+          {insights && <InsightCards insights={insights} />}
 
-      {summary && <SummaryCards summary={summary} />}
-      {insights && <InsightCards insights={insights} />}
+          <div className="grid gap-6 lg:grid-cols-3">
+            <div className="lg:col-span-2">
+              {insights && <SmartMessages messages={insights.messages} />}
+            </div>
+            <div className="lg:col-span-1">
+              <BudgetHealth data={budgets} />
+            </div>
+          </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          {insights && <SmartMessages messages={insights.messages} />}
-        </div>
-        <div className="lg:col-span-1">
-          <BudgetHealth data={budgets} />
-        </div>
-      </div>
+          <div className="grid gap-6 lg:grid-cols-2">
+            <CategoryPieChart data={categories} />
+            <MonthlyTrendChart data={monthly} />
+          </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <CategoryPieChart data={categories} />
-        <MonthlyTrendChart data={monthly} />
-      </div>
-
-      <MonthlyBarChart data={monthly} />
+          <MonthlyBarChart data={monthly} />
+        </>
+      )}
     </div>
   );
 }

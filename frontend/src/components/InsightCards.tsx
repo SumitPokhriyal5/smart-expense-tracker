@@ -1,14 +1,20 @@
 import Card from "./ui/Card";
 import { type Insights, formatCurrency } from "../lib/types";
 
-type Props = { insights: Insights };
+export default function InsightCards({ insights }: { insights: Insights }) {
+  const expChange = insights.expenseChange;
 
-export default function InsightCards({ insights }: Props) {
   const stats = [
     {
       label: "Savings Rate",
       value: `${insights.savingsRate}%`,
-      hint: insights.savingsRate >= 20 ? "Healthy" : "Could improve",
+      sub:
+        insights.savingsRate >= 20
+          ? "Healthy"
+          : insights.savingsRate > 0
+          ? "Could improve"
+          : "Overspending",
+      arrow: "",
       color:
         insights.savingsRate >= 20
           ? "text-income"
@@ -18,32 +24,30 @@ export default function InsightCards({ insights }: Props) {
     },
     {
       label: "vs Last Month",
-      value:
-        insights.expenseChange === null
-          ? "—"
-          : `${insights.expenseChange > 0 ? "+" : ""}${
-              insights.expenseChange
-            }%`,
-      hint: "Spending change",
+      value: expChange === null ? "—" : `${Math.abs(expChange)}%`,
+      sub: "Spending change",
+      arrow: expChange === null ? "" : expChange > 0 ? "↑" : "↓",
       color:
-        insights.expenseChange === null
+        expChange === null
           ? "text-slate-400"
-          : insights.expenseChange > 0
+          : expChange > 0
           ? "text-expense"
           : "text-income",
     },
     {
       label: "Top Category",
       value: insights.topCategory?.category || "—",
-      hint: insights.topCategory
+      sub: insights.topCategory
         ? formatCurrency(insights.topCategory.amount)
         : "No expenses",
+      arrow: "",
       color: "text-brand-600 dark:text-brand-400",
     },
     {
       label: "Projected Spend",
       value: formatCurrency(insights.projectedExpense),
-      hint: "End of month estimate",
+      sub: "Month-end estimate",
+      arrow: "",
       color: "text-slate-700 dark:text-slate-200",
     },
   ];
@@ -51,13 +55,18 @@ export default function InsightCards({ insights }: Props) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {stats.map((s) => (
-        <Card key={s.label} className="p-5">
-          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+        <Card key={s.label} hover className="p-5">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
             {s.label}
           </p>
-          <p className={`mt-2 text-xl font-bold ${s.color}`}>{s.value}</p>
+          <p
+            className={`mt-2 flex items-baseline gap-1 text-xl font-bold ${s.color}`}
+          >
+            {s.arrow && <span className="text-lg">{s.arrow}</span>}
+            <span className="truncate">{s.value}</span>
+          </p>
           <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
-            {s.hint}
+            {s.sub}
           </p>
         </Card>
       ))}
