@@ -10,6 +10,8 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import Budgets from "./pages/Budgets";
+import PublicRoute from "./components/PublicRoute";
+import Landing from "./pages/Landing";
 
 function App() {
   return (
@@ -19,6 +21,14 @@ function App() {
           <DateRangeProvider>
             <BrowserRouter>
               <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <PublicRoute>
+                      <Landing />
+                    </PublicRoute>
+                  }
+                />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route
@@ -41,10 +51,7 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
-                <Route
-                  path="*"
-                  element={<Navigate to="/dashboard" replace />}
-                />
+                <Route path="*" element={<Navigate to="/" replace />} />
                 <Route
                   path="/budgets"
                   element={
