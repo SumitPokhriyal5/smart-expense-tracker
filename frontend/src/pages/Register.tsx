@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { api } from "../lib/api";
 import { useAuth } from "../context/auth-context";
 import Input from "../components/Input";
+import ThemeToggle from "../components/ThemeToggle";
 
 type AuthResponse = { _id: string; name: string; email: string; token: string };
 
@@ -35,14 +36,17 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-50 to-slate-100 px-4">
-      <div className="w-full max-w-md bg-white shadow-card rounded-2xl p-8">
+    <div className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 px-4">
+      <ThemeToggle />
+      <div className="w-full max-w-md bg-white dark:bg-slate-800 shadow-card rounded-2xl p-8 border border-transparent dark:border-slate-700">
         <div className="text-center mb-8">
           <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-600 text-white text-2xl font-bold mb-3">
             ₹
           </div>
-          <h1 className="text-2xl font-bold text-slate-800">Create account</h1>
-          <p className="text-slate-500 mt-1">
+          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+            Create account
+          </h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-1">
             Start tracking your expenses today
           </p>
         </div>
@@ -88,11 +92,11 @@ export default function Register() {
           </button>
         </form>
 
-        <p className="text-center text-sm text-slate-500 mt-6">
+        <p className="text-center text-sm text-slate-500 dark:text-slate-400 mt-6">
           Already have an account?{" "}
           <Link
             to="/login"
-            className="font-semibold text-brand-600 hover:underline"
+            className="font-semibold text-brand-600 dark:text-brand-400 hover:underline"
           >
             Sign in
           </Link>
