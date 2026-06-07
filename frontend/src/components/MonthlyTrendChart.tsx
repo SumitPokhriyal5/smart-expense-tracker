@@ -44,7 +44,9 @@ export default function MonthlyTrendChart({ data }: { data: MonthlyDatum[] }) {
             <YAxis tick={{ fontSize: 12, fill: axis }} stroke={axis} />
             <Tooltip
               contentStyle={tooltipStyle}
-              formatter={(value: number) => formatCurrency(value)}
+              formatter={(value) =>
+                formatCurrency(typeof value === "number" ? value : 0)
+              }
             />
             <Legend wrapperStyle={{ fontSize: "13px" }} />
             <Line

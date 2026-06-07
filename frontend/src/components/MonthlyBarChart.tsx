@@ -45,7 +45,9 @@ export default function MonthlyBarChart({ data }: { data: MonthlyDatum[] }) {
             <Tooltip
               contentStyle={tooltipStyle}
               cursor={{ fill: theme === "dark" ? "#1e293b80" : "#f1f5f980" }}
-              formatter={(value: number) => formatCurrency(value)}
+              formatter={(value) =>
+                formatCurrency(typeof value === "number" ? value : 0)
+              }
             />
             <Legend wrapperStyle={{ fontSize: "13px" }} />
             <Bar dataKey="income" fill="#22c55e" radius={[6, 6, 0, 0]} />

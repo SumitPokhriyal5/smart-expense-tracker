@@ -58,7 +58,9 @@ export default function CategoryPieChart({ data }: { data: CategoryDatum[] }) {
             </Pie>
             <Tooltip
               contentStyle={tooltipStyle}
-              formatter={(value: number) => formatCurrency(value)}
+              formatter={(value) =>
+                formatCurrency(typeof value === "number" ? value : 0)
+              }
             />
             <Legend
               wrapperStyle={{
