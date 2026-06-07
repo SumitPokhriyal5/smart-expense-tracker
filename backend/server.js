@@ -15,6 +15,7 @@ app.use("/api/transactions", require("./routes/transactionRoutes"));
 app.use("/api/analytics", require("./routes/analyticsRoutes"));
 app.use("/api/budgets", require("./routes/budgetRoutes"));
 app.use("/api/insights", require("./routes/insightsRoutes"));
+app.use("/api/recurring", require("./routes/recurringRoutes"));
 
 app.get("/", (req, res) => {
   res.json({ message: "Smart Expense Tracker API is running" });

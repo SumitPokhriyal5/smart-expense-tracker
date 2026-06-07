@@ -4,6 +4,8 @@ const links = [
   { to: "/dashboard", label: "Dashboard", icon: "📊" },
   { to: "/transactions", label: "Transactions", icon: "💳" },
   { to: "/budgets", label: "Budgets", icon: "🎯" },
+  { to: "/recurring", label: "Recurring", icon: "🔁" },
+  { to: "/settings", label: "Settings", icon: "⚙️" },
 ];
 
 export default function Sidebar() {

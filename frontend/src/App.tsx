@@ -12,6 +12,8 @@ import Transactions from "./pages/Transactions";
 import Budgets from "./pages/Budgets";
 import PublicRoute from "./components/PublicRoute";
 import Landing from "./pages/Landing";
+import Settings from "./pages/Settings";
+import Recurring from "./pages/Recurring";
 
 function App() {
   return (
@@ -58,6 +60,26 @@ function App() {
                     <ProtectedRoute>
                       <Layout>
                         <Budgets />
+                      </Layout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/recurring"
+                  element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <Recurring />
+                      </Layout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/settings"
+                  element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <Settings />
                       </Layout>
                     </ProtectedRoute>
                   }

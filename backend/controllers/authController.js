@@ -1,5 +1,38 @@
 const User = require("../models/User");
 const generateToken = require("../config/generateToken");
+const Transaction = require("../models/Transaction");
+const Budget = require("../models/Budget");
+const RecurringTransaction = require("../models/RecurringTransaction");
+
+const updateProfile = async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name || !name.trim()) {
+      return res.status(400).json({ message: "Name is required" });
+    }
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { name: name.trim() },
+      { new: true, runValidators: true }
+    ).select("-password");
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    await Transaction.deleteMany({ user: userId });
+    await Budget.deleteMany({ user: userId });
+    await RecurringTransaction.deleteMany({ user: userId });
+    await User.findByIdAndDelete(userId);
+    res.json({ message: "Account deleted" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
 const registerUser = async (req, res) => {
   try {
@@ -56,4 +89,10 @@ const getProfile = async (req, res) => {
   res.json(req.user);
 };
 
-module.exports = { registerUser, loginUser, getProfile };
+module.exports = {
+  registerUser,
+  loginUser,
+  getProfile,
+  updateProfile,
+  deleteAccount,
+};

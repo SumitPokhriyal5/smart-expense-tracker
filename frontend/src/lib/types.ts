@@ -111,3 +111,13 @@ export type TransactionsResponse = {
   transactions: Transaction[];
   pagination: Pagination;
 };
+
+export type Recurring = {
+  _id: string;
+  type: TxType;
+  amount: number;
+  category: string;
+  note: string;
+  dayOfMonth: number;
+  active: boolean;
+};
