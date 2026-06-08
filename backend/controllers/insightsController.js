@@ -39,8 +39,10 @@ const getInsights = async (req, res) => {
     const current = await totalsForMonth(userId, month);
     const previous = await totalsForMonth(
       userId,
-      month === prevMonth ? month : prevMonth
+      month === prevMonth ? month : prevMonth,
     );
+
+    const hasData = current.income > 0 || current.expense > 0;
 
     const savings = current.income - current.expense;
     const savingsRate =
@@ -49,7 +51,7 @@ const getInsights = async (req, res) => {
     let expenseChange = null;
     if (previous.expense > 0) {
       expenseChange = Math.round(
-        ((current.expense - previous.expense) / previous.expense) * 100
+        ((current.expense - previous.expense) / previous.expense) * 100,
       );
     }
 
@@ -75,7 +77,7 @@ const getInsights = async (req, res) => {
     const daysInMonth = new Date(
       Number(month.slice(0, 4)),
       Number(month.slice(5, 7)),
-      0
+      0,
     ).getDate();
     const dayOfMonth = isCurrentMonth ? now.getUTCDate() : daysInMonth;
     const dailyBurn =
@@ -112,6 +114,7 @@ const getInsights = async (req, res) => {
       currentExpense: current.expense,
       isCurrentMonth,
       overBudgetCount,
+      hasData,
     });
 
     res.json({
@@ -140,7 +143,17 @@ function buildMessages({
   currentExpense,
   isCurrentMonth,
   overBudgetCount,
+  hasData,
 }) {
+  if (!hasData) {
+    return [
+      {
+        type: "neutral",
+        text: "Welcome! Add your first transaction to start seeing insights.",
+      },
+    ];
+  }
+
   const messages = [];
 
   if (savingsRate >= 20) {
@@ -153,7 +166,7 @@ function buildMessages({
       type: "neutral",
       text: `You saved ${savingsRate}% of your income. Aim for 20% or more.`,
     });
-  } else if (savingsRate <= 0) {
+  } else if (currentExpense > 0) {
     messages.push({
       type: "negative",
       text: `You spent more than you earned this month. Time to review expenses.`,
@@ -169,9 +182,7 @@ function buildMessages({
     } else if (expenseChange < -10) {
       messages.push({
         type: "positive",
-        text: `Spending is down ${Math.abs(
-          expenseChange
-        )}% versus last month. Nice.`,
+        text: `Spending is down ${Math.abs(expenseChange)}% versus last month. Nice.`,
       });
     } else {
       messages.push({
@@ -191,18 +202,14 @@ function buildMessages({
   if (isCurrentMonth && projectedExpense > currentExpense) {
     messages.push({
       type: "neutral",
-      text: `At your current pace, you're projected to spend around ₹${projectedExpense.toLocaleString(
-        "en-IN"
-      )} this month.`,
+      text: `At your current pace, you're projected to spend around ₹${projectedExpense.toLocaleString("en-IN")} this month.`,
     });
   }
 
   if (overBudgetCount > 0) {
     messages.push({
       type: "negative",
-      text: `You've exceeded ${overBudgetCount} budget${
-        overBudgetCount > 1 ? "s" : ""
-      } this month.`,
+      text: `You've exceeded ${overBudgetCount} budget${overBudgetCount > 1 ? "s" : ""} this month.`,
     });
   }
 
